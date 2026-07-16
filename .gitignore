@@ -1,0 +1,23 @@
+# Virtuálne prostredia (Python venv)
+venv/
+.venv/
+env/
+
+# Databáza (Lokálny vektorový index)
+chroma_db/
+
+# Python cache súbory
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Nastavenia vývojového prostredia (IDE)
+.vscode/
+.idea/
+
+# Knižnica kníh (corpora)
+# Ignorujeme všetky PDF knižky vnútri, ale zachováme štruktúru vďaka README
+corpora/*
+!corpora/README.md

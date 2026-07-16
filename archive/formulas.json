@@ -1,0 +1,67 @@
+[
+    {
+        "id": 1,
+        "title": "Newton's Second Law",
+        "keywords": [
+            "newton",
+            "force",
+            "mass",
+            "acceleration",
+            "mechanics"
+        ],
+        "formula": "F = m * a",
+        "description": "The force acting on an object is equal to the product of its mass and acceleration.",
+        "variables": {
+            "F": "Force (N)",
+            "m": "Mass (kg)",
+            "a": "Acceleration (m/s²)"
+        },
+        "examples": [
+            "m=10kg a=3m/s² -> F=30N",
+            "m=5kg a=2m/s² -> F=10N"
+        ]
+    },
+
+    {
+        "id": 2,
+        "title": "Ohm's Law",
+        "keywords": [
+            "ohm",
+            "voltage",
+            "current",
+            "resistance",
+            "electricity"
+        ],
+        "formula": "U = I * R",
+        "description": "Voltage is the product of current and resistance.",
+        "variables": {
+            "U": "Voltage (V)",
+            "I": "Current (A)",
+            "R": "Resistance (Ω)"
+        },
+        "examples": [
+            "I=2A R=5Ω -> U=10V"
+        ]
+    },
+
+    {
+        "id": 3,
+        "title": "Pythagorean Theorem",
+        "keywords": [
+            "triangle",
+            "right-angled",
+            "geometry",
+            "hypotenuse"
+        ],
+        "formula": "c = sqrt(a²+b²)",
+        "description": "The length of the hypotenuse is the square root of the sum of the squares of the legs.",
+        "variables": {
+            "a": "Leg",
+            "b": "Leg",
+            "c": "Hypotenuse"
+        },
+        "examples": [
+            "3,4 -> 5"
+        ]
+    }
+]
