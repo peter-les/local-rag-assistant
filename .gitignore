@@ -21,3 +21,6 @@ __pycache__/
 # Ignorujeme všetky PDF knižky vnútri, ale zachováme štruktúru vďaka README
 corpora/*
 !corpora/README.md
+
+# Spúšťacie skripty a lokálne nástroje
+start.bat

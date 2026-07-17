@@ -48,11 +48,27 @@ class Conversation:
 
         self.messages.clear()
 
-    def last_messages(
+    def last_messages(self, count=2):
 
-            self,
+        history = []
 
-            count=2  # Znížili sme z 6 na 2, aby model nevidel príliš staré debaty
-    ):
+        for message in self.messages[-count:]:
 
-        return self.messages[-count:]
+            role = "User" if message.role == "user" else "Assistant"
+ 
+            history.append(
+                f"{role}: {message.content}"
+            )
+
+        return "\n".join(history)
+		
+    def last_user_questions(self, count=2):
+
+        questions = []
+
+        for message in self.messages:
+
+            if message.role == "user":
+                questions.append(message.content)
+
+        return "\n".join(questions[-count:])

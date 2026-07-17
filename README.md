@@ -309,7 +309,9 @@ This helps prevent unsupported answers.
 *(to be added)*
 
 ### Example Conversation & Citations
-![Chat Example](assets/chat_example.png)
+![Chat Example1](assets/chat_example1.png)
+
+![Chat Example2](assets/chat_example2.png)
 
 ---
 

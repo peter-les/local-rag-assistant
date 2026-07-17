@@ -1,3 +1,4 @@
+# app.py
 import sys
 from pathlib import Path
 
@@ -13,6 +14,7 @@ from vector_store import (
     get_all_authors,
     get_all_books
 )
+from conversation import Conversation  # <- Import presunutý sem nahor
 from config import VERSION
 
 # Nastavenie konfigurácie stránky
@@ -73,17 +75,15 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 # ---------------- Logo a hlavný nadpis (vedľa seba) ----------------
-# Vytvoríme dva stĺpce: úzky pre logo (1) a široký pre nadpis (15)
 col_logo, col_title = st.columns([2, 15], vertical_alignment="center")
 
 with col_logo:
     try:
         logo = Image.open("assets/logo.png")
-        # Šírku sme dali na 90px, aby to presne pasovalo k výške nadpisu
         st.image(logo, width=90)
     except FileNotFoundError:
-        # Fallback zladený s tvojím skutočným logom - zelený lístok
         st.markdown("# 🍃")
 
 with col_title:
@@ -93,15 +93,13 @@ with col_title:
 # Inicializácia session state (pamäte aplikácie)
 if "messages" not in st.session_state:
     st.session_state.messages = []
-	
-from conversation import Conversation
 
 if "conversation" not in st.session_state:
     st.session_state.conversation = Conversation()
 
 if "filter" not in st.session_state:
     st.session_state.filter = SearchFilter()
-	
+    
 # ---------------- Sidebar (Bočný panel) ----------------
 st.sidebar.title("Settings")
 st.sidebar.subheader("Knowledge Base")
@@ -133,7 +131,6 @@ if len(selected_books) != len(books):
 
 st.sidebar.divider()
 st.sidebar.subheader("Retrieval")
-# Sem neskôr v ďalších krokoch pridáme posuvníky pre Top K a Confidence Threshold
 from config import TOP_K
 st.sidebar.info(
     f"""
@@ -145,8 +142,9 @@ st.sidebar.divider()
 # Tlačidlo na vymazanie histórie
 if st.sidebar.button("🗑 Clear conversation"):
     st.session_state.messages = []
+    st.session_state.conversation.clear()  # <-- OPRAVENÉ: Vyčistíme aj objekt histórie pre LLM a retriever!
     st.rerun()
-	
+    
 st.sidebar.divider()
 st.sidebar.caption(f"WisdomRAG v{VERSION}")
 
@@ -171,11 +169,10 @@ if len(st.session_state.messages) == 0:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-		# Ak správa obsahuje citácie, zobrazíme pod ňou expander
         if "citations" in message and message["citations"]:
             with st.expander("📚 Sources"):
                 st.markdown(message["citations"])
-		
+        
 # ---------------- Četové vstupné pole ----------------
 question = st.chat_input("Ask a question...")
 
@@ -188,20 +185,20 @@ if question:
             "content": question
         }
     )
-	
-	# === KROK 1: Pridanie otázky do objektu Conversation ===
+    
+    # Pridanie otázky do objektu Conversation
     st.session_state.conversation.add_user(question)
-	
-	# Okamžité vykreslenie otázky na obrazovku
+    
+    # Okamžité vykreslenie otázky na obrazovku
     with st.chat_message("user"):
         st.markdown(question)
-		
+        
     # 2. Generovanie a postupné streamovanie odpovede asistenta
     with st.chat_message("assistant"):
         placeholder = st.empty()
         answer = ""
         citations = ""  # Sem si uložíme citácie, ktoré prídu na konci
-		
+        
         with st.spinner("🔍 Searching database & thinking..."):
             chunks = ask(
                 question, 
@@ -228,17 +225,16 @@ if question:
             # Zobrazíme finálny text bez blikajúceho kurzora
             placeholder.markdown(answer)
 
-        # === KROK 3: Zobrazenie zdrojov cez rozbaľovací expander ===
+        # 3. Zobrazenie zdrojov cez rozbaľovací expander
         if citations:
             with st.expander("📚 Sources"):
                 st.markdown(citations)
 
-        # 3. Uloženie odpovede a citácií (môžeš uložiť len čistú odpoveď)
+        # 4. Uloženie odpovede a citácií
         st.session_state.messages.append(
             {
                 "role": "assistant",
                 "content": answer,
-                # Môžeme uložiť aj citácie, aby sa vykreslili pri znovunačítaní histórie
                 "citations": citations 
             }
         )

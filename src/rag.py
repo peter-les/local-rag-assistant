@@ -12,7 +12,19 @@ def ask(question, search_filter=None, conversation=None, debug=True):
     # 1. Informujeme, že prehľadávame databázu
     print("🔍 Searching database for relevant passages...", end="", flush=True)
     
-    results = retrieve(question, search_filter)
+    search_question = question
+
+    if conversation is not None:
+
+        history = conversation.last_user_questions()
+
+        if history:
+            search_question = history + "\n" + question
+
+    results = retrieve(
+        search_question,
+        search_filter
+    )
 
     # Zmažeme správu o vyhľadávaní z konzoly, aby neprekážala debug výpisom
     print("\r" + " " * 60 + "\r", end="", flush=True)

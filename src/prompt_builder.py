@@ -1,11 +1,11 @@
+#prompt_builder.py
 from config import MAX_CONTEXT_CHARS
-from config import NO_ANSWER_MESSAGE
 from config import MAX_PROMPT_RESULTS
 
 from models import SearchResult
 
 
-SYSTEM_PROMPT = f"""
+SYSTEM_PROMPT = """
 You are WisdomRAG.
 
 Your task is to answer ONLY from the supplied source passages.
@@ -16,7 +16,7 @@ Rules:
 
 2. Never invent information.
 
-3. If the supplied passages do not contain the answer, reply ONLY with exactly: {NO_ANSWER_MESSAGE}. If you DO find the answer, do NOT include or append this message anywhere in your response.
+3. Answer ONLY from the supplied source passages.If the answer cannot be inferred from the supplied passages, do not try to formulate an answer and avoid guessing.
 
 4. Provide a moderately detailed and comprehensive answer of exactly 6 to 8 paragraphs. Synthesize findings from multiple sources if possible. Elaborate on the concepts in depth based strictly on the text, but avoid any unnecessary fluff, repetition, or talking in circles.
 
@@ -34,19 +34,18 @@ def build_prompt(
     conversation_history: str = ""
 ) -> str:
     """
-    Skladá finálny prompt pre LLM.
-    História prichádza už spracovaná ako text z rag.py do conversation_history.
+    Skladá finálny prompt pre LLM bez zbytočného balastu (bez similarity distance).
     """
     prompt = SYSTEM_PROMPT
 
     prompt += "\n\n"
 
-    # 1. Pridanie zdrojov (SOURCES) - skutoční autori a knihy sú utajení
+    # 1. Pridanie očistených zdrojov (SOURCES) - skutoční autori a knihy sú utajení
     prompt += "========== SOURCES ==========\n\n"
 
     for i, result in enumerate(retrieved_documents[:MAX_PROMPT_RESULTS], start=1):
         prompt += f"Source {i}\n"
-        prompt += f"Similarity distance: {result.distance:.4f}\n"
+        #prompt += f"Similarity distance: {result.distance:.4f}\n"
         prompt += f"Page: {result.page}\n\n"
 
         prompt += (
@@ -58,7 +57,7 @@ def build_prompt(
         prompt += "\n\n"
 
     # 2. Pridanie histórie konverzácie (HISTORY), ak nejaká existuje
-    if conversation_history.strip():
+    if conversation_history:
         prompt += "========== HISTORY ==========\n\n"
         prompt += conversation_history
         prompt += "\n\n"
