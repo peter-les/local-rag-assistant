@@ -262,6 +262,7 @@ This step
 * splits it into chunks
 * computes embeddings
 * stores everything inside ChromaDB
+  
 💡 Note: This step needs to be executed only once, or whenever new PDF documents are added to the corpora/ folder.
 
 ---
