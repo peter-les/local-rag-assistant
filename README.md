@@ -233,7 +233,7 @@ Ensure your PDF books are organized inside the corpora/ directory. Structure the
 Example:
 
 ```
-corpora/
+corpora/spiritual/
 
     Eckhart Tolle/
         The Power of Now.pdf
